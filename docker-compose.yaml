@@ -1,37 +1,54 @@
-version: '3'
+version: '3.7'
 services:
   web:
     platform: linux/x86_64
     container_name: ${WEB_HOST}
     image: ${WEB_IMAGE_NAME}:${WEB_IMAGE_TAG}
     build: ./
-    depends_on:
-      - db
     ports:
       - "${WEB_PORT}:8069"
     volumes:
       - odoo-web-data:/var/lib/odoo
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
-      - ./addons-customize:/mnt/extra-addons-customize
-    environment:
-      - VIRTUAL_HOST=odoo15.marlonfalcon.com
-    entrypoint: "/usr/bin/odoo -c /etc/odoo/odoo.conf"
+      - ./copy-addons:/mnt/copy-addons
+      - ./livetech_l10n_ve:/mnt/livetech_l10n_ve
+      - ./livetech_l10n_ve_hr:/mnt/livetech_l10n_ve_hr
+      - ./lifetech_custom:/mnt/lifetech_custom
+    entrypoint: "/usr/bin/odoo -c /etc/odoo/odoo.conf -u all"
     restart: always
-  db:
-    platform: linux/x86_64
-    container_name: ${DB_HOST}
-    image: ${DB_IMAGE}:${DB_TAG}
-    environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_PASSWORD=${DB_PASSWD}
-      - POSTGRES_USER=${DB_USER}
-      - PGDATA=/var/lib/postgresql/data/pgdata
-    ports:
-      - "${DB_PORT}:5432"
-    volumes:
-      - odoo-db-data:/var/lib/postgresql/data/pgdata
-    restart: always
+networks:
+  default:
+    name: common
+    external: true
 volumes:
-  odoo-db-data:
   odoo-web-data:
+
+# version: '3.7'
+# services:
+#   web:
+#     platform: linux/x86_64
+#     container_name: ${WEB_HOST}
+#     image: ${WEB_IMAGE_NAME}:${WEB_IMAGE_TAG}
+#     build: ./
+#     ports:
+#       - "${WEB_PORT}:8069"
+#     volumes:
+#       - odoo-web-data:/var/lib/odoo
+#       - ./config:/etc/odoo
+#       - ./addons:/mnt/extra-addons
+#       - ./copy-addons:/mnt/copy-addons
+#       - ./Odoo_Addons:/mnt/live-tech-addons
+#       - ./Odoo_Addons/odoo_venezuela:/mnt/odoo_venezuela
+#       - ./Odoo_Addons/Lifetek_RRHH_extras:/mnt/Lifetek_RRHH_extras
+#       - ./livetech_l10n_ve:/mnt/livetech_l10n_ve
+#       - ./livetech_l10n_ve_hr:/mnt/livetech_l10n_ve_hr
+#       - ./lifetech_custom:/mnt/lifetech_custom
+#     entrypoint: "/usr/bin/odoo -c /etc/odoo/odoo.conf -u life_pos"
+#     restart: always
+# networks:
+#   default:
+#     name: common
+#     external: true
+# volumes:
+#   odoo-web-data:

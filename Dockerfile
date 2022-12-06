@@ -1,7 +1,8 @@
 FROM odoo:15.0
 
-LABEL MAINTAINER Marlon Falcon <mfalconsoft@gmail.com>
+LABEL MAINTAINER Jhonny Prz <jhonnyjose1998@gmail.com>
 USER root
-
-RUN pip3 install dropbox
+RUN apt-get update && apt-get upgrade -y && apt-get install iputils-ping -y
+RUN pip3 install dropbox openpyxl pandas
+RUN pip3 install PyCNE==0.1
 
